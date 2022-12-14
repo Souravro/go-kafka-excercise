@@ -1,0 +1,23 @@
+1. Run zookeper kafka and kafdrop services
+
+   `sh docker.sh create`
+
+   This will run the docker compose command to run each container. refer `docker.sh`.
+   Each container yml files can be found under `containers/` directory
+
+2. Create Kafka topic -
+   Exec into the broker docker container and use `kafka-topics` command to create a topic -
+
+   ```
+   souravroy@Souravs-MacBook-Pro go-kafka-excercise % docker exec -it broker /bin/bash
+   [appuser@fd460f098afb ~]$
+   [appuser@fd460f098afb ~]$ kafka-topics --bootstrap-server 0.0.0.0:9092 --create --topic user_details
+   WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
+   Created topic user_details.
+   [appuser@fd460f098afb ~]$
+   ````
+3. For producing messages-
+    Run the producer go binary to produce random json object messages.
+    ```
+    go run producer/producer
+    ```
