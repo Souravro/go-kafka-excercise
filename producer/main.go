@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/Shopify/sarama"
 	"log"
 	"math/rand"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/Shopify/sarama"
 )
 
 type User struct {
@@ -19,7 +20,6 @@ type User struct {
 
 var (
 	brokers             = "0.0.0.0:9092"
-	version             = "0.11.0.0"
 	topic               = "user_details"
 	recordsNumber int64 = 10
 
@@ -30,13 +30,7 @@ var (
 )
 
 func createConfig() *sarama.Config {
-	version, err := sarama.ParseKafkaVersion(version)
-	if err != nil {
-		log.Panicf("Error parsing Kafka version: %v", err)
-	}
-
 	config := sarama.NewConfig()
-	config.Version = version
 	config.Producer.Idempotent = true
 	config.Producer.Return.Errors = true
 	config.Producer.Return.Successes = true
@@ -54,7 +48,6 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	config := createConfig()
-	//prodProvider := createProducerProvider(brokers, config)
 	producer, err := sarama.NewSyncProducer(strings.Split(brokers, ","), config)
 	if err != nil {
 		log.Printf("Producer. Error in creating producer. Error: [%v]", producer)
@@ -93,14 +86,6 @@ func encodeMessage(msg interface{}) []byte {
 	}
 
 	return val
-
-	//buf := bytes.Buffer{}
-	//enc := gob.NewEncoder(&buf)
-	//err := enc.Encode(msg)
-	//if err != nil {
-	//	log.Fatalf("Error in converting msg into []byte. Error: [%v]", err)
-	//}
-	//return buf.Bytes()
 }
 
 func produceRecord(producer sarama.SyncProducer) {
