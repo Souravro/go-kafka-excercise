@@ -16,8 +16,14 @@
    Created topic user_details.
    [appuser@fd460f098afb ~]$
    ````
-3. For producing messages-
+3. For producing messages -
     Run the producer go binary to produce random json object messages.
     ```
-    go run producer/producer
+    go run producer/main.go
     ```
+
+4. For consuming messages -
+   Run the consumer go binary to consume and process the json object messages
+   ```
+   go run consumer/main.go
+   ```
