@@ -31,14 +31,9 @@ var (
 
 func createConfig() *sarama.Config {
 	config := sarama.NewConfig()
-	config.Producer.Idempotent = true
 	config.Producer.Return.Errors = true
 	config.Producer.Return.Successes = true
 	config.Producer.RequiredAcks = sarama.WaitForAll
-	config.Producer.Partitioner = sarama.NewRoundRobinPartitioner
-	config.Producer.Transaction.Retry.Backoff = 10
-	config.Producer.Transaction.ID = "txn_producer"
-	config.Net.MaxOpenRequests = 1
 
 	return config
 }
@@ -69,14 +64,14 @@ func main() {
 	cancel()
 }
 
-func getMessage() User {
+func getEncodedMessage() []byte {
 	// Randomly create a json object of type User
 	rand.Seed(time.Now().Unix())
-	return User{
+	return encodeMessage(User{
 		Name:  names[rand.Intn(len(names))],
 		Phone: phones[rand.Intn(len(phones))],
 		Email: emails[rand.Intn(len(emails))],
-	}
+	})
 }
 
 func encodeMessage(msg interface{}) []byte {
@@ -89,31 +84,18 @@ func encodeMessage(msg interface{}) []byte {
 }
 
 func produceRecord(producer sarama.SyncProducer) {
-	// Start kafka transaction
-	err := producer.BeginTxn()
-	if err != nil {
-		log.Printf("Producer: unable to start txn %s\n", err)
-		return
-	}
-
 	// Produce records
 	for i := int64(0); i < recordsNumber; i++ {
-		msgToProduce := getMessage()
-		msgBytes := encodeMessage(msgToProduce)
+		msgBytes := getEncodedMessage()
 		producerMsg := &sarama.ProducerMessage{Topic: topic, Key: nil, Value: sarama.StringEncoder(msgBytes)}
 		partition, offset, er := producer.SendMessage(producerMsg)
 		if er != nil {
 			log.Printf("Producer. Unable to Send Message to topic. Error: [%v]", er)
 			return
 		}
-		log.Printf("Producer: produced message- [%v]. Partition: [%v]. Offset: [%v]", msgToProduce, partition, offset)
+		log.Printf("Producer: produced message- [%v]. Partition: [%v]. Offset: [%v]", string(msgBytes), partition, offset)
 		time.Sleep(500 * time.Millisecond)
 	}
 
-	err = producer.CommitTxn()
-	if err != nil {
-		log.Printf("Producer: unable to commit txn %s\n", err)
-		return
-	}
-	log.Println("Producer: txn successfully committed.")
+	log.Println("Producer: message successfully published.")
 }

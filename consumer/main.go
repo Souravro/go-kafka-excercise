@@ -32,6 +32,7 @@ var (
 	brokers = "0.0.0.0:9092"
 	topic   = "user_details"
 	group   = "user_group"
+	oldest  = true
 )
 
 func main() {
@@ -41,6 +42,9 @@ func main() {
 	log.Println("Starting a new Sarama consumer...")
 	config := sarama.NewConfig()
 	config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.BalanceStrategyRoundRobin}
+	if oldest {
+		config.Consumer.Offsets.Initial = sarama.OffsetOldest
+	}
 
 	// Setup a new Sarama consumer group
 	consumer := Consumer{
