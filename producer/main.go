@@ -20,7 +20,7 @@ type User struct {
 
 var (
 	brokers             = "0.0.0.0:9092"
-	topic               = "user_details"
+	topic               = "idle_user_details"
 	recordsNumber int64 = 10
 
 	// following will be used to randomly generate json objects
