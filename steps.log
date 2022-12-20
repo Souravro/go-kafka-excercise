@@ -6,15 +6,27 @@
    Each container yml files can be found under `containers/` directory
 
 2. Create Kafka topic -
-   Exec into the broker docker container and use `kafka-topics` command to create a topic -
+   Use the below command. The argument after `create-topic` is `type` which defines the partition and replication of the topic.
+   `sh docker.sh create-topic 2`
 
+   Example - 
    ```
-   souravroy@Souravs-MacBook-Pro go-kafka-excercise % docker exec -it broker /bin/bash
-   [appuser@fd460f098afb ~]$
-   [appuser@fd460f098afb ~]$ kafka-topics --bootstrap-server 0.0.0.0:9092 --create --topic user_details
+   souravroy@Souravs-MacBook-Pro go-kafka-excercise % 
+   souravroy@Souravs-MacBook-Pro go-kafka-excercise % sh docker.sh create-topic 4
+   Enter topic name:
+   user_details_2
+   Creating topic with name: user_details_2, partition: 2, replication_factor: 2
    WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
-   Created topic user_details.
-   [appuser@fd460f098afb ~]$
+   Created topic user_details_2.
+   souravroy@Souravs-MacBook-Pro go-kafka-excercise % 
+   souravroy@Souravs-MacBook-Pro go-kafka-excercise % 
+   souravroy@Souravs-MacBook-Pro go-kafka-excercise % sh docker.sh create-topic
+   Required argument 'type'.
+   type '1' : 1 partition 1 replica.
+   type '2' : 1 partition 2 replica.
+   type '3' : 2 partition 1 replica.
+   type '4' : 2 partition 2 replica.
+   souravroy@Souravs-MacBook-Pro go-kafka-excercise % 
    ````
 3. For producing messages -
     Run the producer go binary to produce random json object messages.
