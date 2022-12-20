@@ -8,5 +8,5 @@ services:
       - "9000:9000"
     container_name: kafdrop
     environment:
-      KAFKA_BROKERCONNECT: "broker:29092"
+      KAFKA_BROKERCONNECT: "broker_1:9092"
       JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"

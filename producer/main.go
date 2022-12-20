@@ -19,8 +19,8 @@ type User struct {
 }
 
 var (
-	brokers             = "0.0.0.0:9092"
-	topic               = "idle_user_details"
+	brokers             = "0.0.0.0:8097"
+	topic               = "user_details_2"
 	recordsNumber int64 = 10
 
 	// following will be used to randomly generate json objects
@@ -45,7 +45,7 @@ func main() {
 	config := createConfig()
 	producer, err := sarama.NewSyncProducer(strings.Split(brokers, ","), config)
 	if err != nil {
-		log.Printf("Producer. Error in creating producer. Error: [%v]", producer)
+		log.Printf("Producer. Error in creating producer. Error: [%v]", err)
 	}
 
 	var wg sync.WaitGroup

@@ -29,9 +29,9 @@ type User struct {
 
 // Sarama configuration options
 var (
-	brokers = "0.0.0.0:9092"
-	topic   = "idle_user_details"
-	group   = "idle_user_group"
+	brokers = "0.0.0.0:8097"
+	topic   = "user_details_2"
+	group   = "user_group_2"
 	oldest  = true
 )
 
